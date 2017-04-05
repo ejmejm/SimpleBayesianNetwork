@@ -1,34 +1,40 @@
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import bn.core.*;
+import bn.inference.ExactInferencer;
 import bn.parser.*;
 
 public class Main {
 	
 	public static void main(String args[]){
-		String inputFilePath = "src/bn/examples/alarm.bif";
+		String inputFilePath = "src/bn/examples/aima-alarm.xml";
 		
-		/*
 		XMLBIFParser parser = new XMLBIFParser();
-		BayesianNetwork bn;
-		
-		bn = parser.readNetworkFromFile("/examples/aima-alarm.xml");
-		*/
-	
+		BayesianNetwork bn = null;
+
+		/*
 		BIFParser parser;
 		BayesianNetwork bn = null;
+		*/
 		
 		try {
+			/*
 			parser = new BIFParser(new FileInputStream(inputFilePath));
 			bn = parser.parseNetwork();
-		} catch (IOException e) {
+			*/
+			bn = parser.readNetworkFromFile(inputFilePath);
+		} catch (IOException | ParserConfigurationException | SAXException e) {
 			e.printStackTrace();
 		}
 		
-		bn.print();
 		Assignment a = new Assignment();
-		a.set(bn.getVariableByName("INTUBATION"), 5);
-		System.out.println(a);
-		System.out.println(bn.getProb(bn.getVariableByName("INTUBATION"), a));
+		a.set(bn.getVariableByName("M"), "true");
+		
+		System.out.println(ExactInferencer.enumarationAsk(bn, bn.getVariableByName("J"), a));
 	}
 }
