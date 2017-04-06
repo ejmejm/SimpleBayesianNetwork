@@ -10,6 +10,12 @@ package bn.core;
 import java.io.*;
 import java.util.*;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
+import bn.parser.BIFParser;
+import bn.parser.XMLBIFParser;
 import bn.util.ArraySet;
 import bn.util.Printable;
 
@@ -108,6 +114,30 @@ public class BayesianNetwork {
      * Construct and return a new (empty) BayesianNetwork.
      */
     public BayesianNetwork() {
+    }
+    
+    //Added by Edan Meyer
+    public static BayesianNetwork constructFromFile(String filePath){ //Construct a bn from a .xml or .bif file
+		if(filePath.endsWith(".xml")){
+			XMLBIFParser parser = new XMLBIFParser();
+			try {
+				return parser.readNetworkFromFile(filePath);
+			} catch (IOException | ParserConfigurationException | SAXException e) {
+				e.printStackTrace();
+			}
+		}else if(filePath.endsWith(".bif")){
+			BIFParser parser;
+			try {
+				parser = new BIFParser(new FileInputStream(filePath));
+				return parser.parseNetwork();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			System.err.println("ERROR! Please provide a .xml or .bif file");
+			return null;
+		}
+		return null;
     }
 
     /**

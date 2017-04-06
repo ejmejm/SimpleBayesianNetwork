@@ -1,8 +1,6 @@
 package bn.inference;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -58,5 +56,20 @@ public class ExactInferencer {
 			
 			return sumY;
 		}
+	}
+
+	public static void main(String args[]){
+		if(args.length < 2){
+			System.err.println("ERROR! Not enough arguments");
+			return;
+		}
+		
+		BayesianNetwork bn = BayesianNetwork.constructFromFile(args[0]);
+
+		Assignment e = new Assignment();
+		for(int i = 2; i < args.length; i += 2)
+			e.set(bn.getVariableByName(args[i]), args[i+1]);
+		
+		System.out.println(ExactInferencer.enumarationAsk(bn, bn.getVariableByName(args[1]), e));
 	}
 }
